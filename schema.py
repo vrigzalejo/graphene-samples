@@ -68,8 +68,8 @@ schema = graphene.Schema(query=Query, mutation=Mutation)
 
 result = schema.execute(
     '''
-    mutation {
-        createUser(username: "Vrigz") {
+    mutation ($username: String) {
+        createUser(username: $username) {
             user {
                 id
                 username
@@ -78,7 +78,8 @@ result = schema.execute(
         }
     }
 
-    '''
+    ''',
+    variable_values={'username': 'Vrigz'}
 )
 
 dictResult = dict(result.data.items())
