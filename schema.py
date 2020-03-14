@@ -3,12 +3,18 @@ import json
 import uuid
 from datetime import datetime
 
+class Post(graphene.ObjectType):
+    title = graphene.String()
+    content = graphene.String()
 
 class User(graphene.ObjectType):
     id = graphene.ID(default_value=str(uuid.uuid4()))
     username = graphene.String()
     created_at = graphene.DateTime(default_value=datetime.now())
+    avatar_url = graphene.String()
 
+    def resolve_avatar_url(self, info):
+        return 'https://cloudinary.com/{}/{}'.format(self.username, self.id)
 
 class CreateUser(graphene.Mutation):
     user = graphene.Field(User)
@@ -20,6 +26,19 @@ class CreateUser(graphene.Mutation):
         user = User(username=username)
         return CreateUser(user=user)
 
+class CreatePost(graphene.Mutation):
+    post = graphene.Field(Post)
+
+    class Arguments:
+        title = graphene.String()
+        content = graphene.String()
+
+    def mutate(self, info, title, content):
+        if info.context.get('is_anonymous'):
+            raise Exception('Not authenticated!')
+
+        post = Post(title=title, content=content)
+        return CreatePost(post=post)
 
 class Query(graphene.ObjectType):
     users = graphene.List(User, limit=graphene.Int())
@@ -49,6 +68,7 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
+    create_post = CreatePost.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
@@ -60,6 +80,7 @@ result = schema.execute(
             id
             username
             createdAt
+            avatarUrl
         }
     }
 
@@ -82,6 +103,22 @@ result = schema.execute(
 #     ''',
 #     variable_values={'username': 'Vrigz'}
 # )
+
+# result = schema.execute(
+#     '''
+#     mutation {
+#         createPost(title: "Hello", content: "World") {
+#             post {
+#                 title
+#                 content
+#             }
+#         }
+#     }
+
+#     ''',
+#     context={ 'is_anonymous': True }
+# )
+
 
 dictResult = dict(result.data.items())
 print(json.dumps(dictResult, indent=2))
