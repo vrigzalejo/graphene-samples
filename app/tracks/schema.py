@@ -13,6 +13,7 @@ class LikeType(DjangoObjectType):
     class Meta:
         model = Like
 
+
 class Query(graphene.ObjectType):
     tracks = graphene.List(TrackType)
     likes = graphene.List(LikeType)
@@ -66,8 +67,6 @@ class CreateLike(graphene.Mutation):
 
         return CreateLike(user=user, track=track)
 
-
-    
 
 class UpdateTrack(graphene.Mutation):
     track = graphene.Field(TrackType)
