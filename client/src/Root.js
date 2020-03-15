@@ -1,5 +1,5 @@
 import React from "react";
-import withRoot from "./withRoot";
+import withRoot from "withRoot";
 
 const Root = () => <div>Root</div>;
 
