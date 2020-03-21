@@ -26,17 +26,23 @@ function Register ({ classes, setNewUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
-  const [createUser, { loading, error }] = useMutation(REGISTER_MUTATION);
+  
+  const [createUser, { loading, error }] = useMutation(
+    REGISTER_MUTATION,
+    {
+      onCompleted: () => setOpen(true)
+    }
+  );
 
-  const handleSubmit = async (event, createUser) => {
+  const handleSubmit = (event, createUser) => {
     event.preventDefault();
-    await createUser({
+    createUser({
       variables: {
         username,
         email,
         password
       }
-    }).then(setOpen(true));
+    });
   };
 
   return <div className={classes.root}>
