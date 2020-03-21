@@ -1,25 +1,95 @@
-import React from "react";
+import React, { useState } from "react";
+import { useMutation, gql } from "@apollo/client";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
-// import Typography from "@material-ui/core/Typography";
-// import Avatar from "@material-ui/core/Avatar";
-// import FormControl from "@material-ui/core/FormControl";
-// import Paper from "@material-ui/core/Paper";
-// import Input from "@material-ui/core/Input";
-// import InputLabel from "@material-ui/core/InputLabel";
-// import Button from "@material-ui/core/Button";
-// import Dialog from "@material-ui/core/Dialog";
-// import DialogActions from "@material-ui/core/DialogActions";
-// import DialogContent from "@material-ui/core/DialogContent";
-// import DialogContentText from "@material-ui/core/DialogContentText";
-// import DialogTitle from "@material-ui/core/DialogTitle";
-// import Slide from "@material-ui/core/Slide";
-// import Gavel from "@material-ui/icons/Gavel";
-// import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
+import FormControl from "@material-ui/core/FormControl";
+import Paper from "@material-ui/core/Paper";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
+import Gavel from "@material-ui/icons/Gavel";
+import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 
-const Register = ({ classes }) => {
-  return <div>Register</div>;
-};
+function Register ({ classes }) {
+  const [createUser, { loading, error }] = useMutation(REGISTER_MUTATION);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (event, createUser) => {
+    event.preventDefault();
+    const res = await createUser({
+      variables: {
+        username,
+        email,
+        password
+      }
+    });
+    console.log({ res });
+  };
+
+  return <div className={classes.root}>
+    <Paper className={classes.paper}>
+      <Avatar className={classes.avatar}>
+        <Gavel />
+      </Avatar>
+      <Typography variant="headline">
+        Register
+      </Typography>
+      <form onSubmit={event => handleSubmit(event, createUser)} className={classes.form}>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="username">Username</InputLabel>
+          <Input id="username" onChange={event => setUsername(event.target.value)}/>
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="email">Email</InputLabel>
+          <Input id="email" type="email" onChange={event => setEmail(event.target.value)} />
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="password">Password</InputLabel>
+          <Input id="email" type="password" onChange={event => setPassword(event.target.value)}/>
+        </FormControl>
+        <Button type="submit"
+          fullWidth
+          variant="contained"
+          color="secondary"
+          className={classes.submit}>
+          Register
+        </Button>
+        <Button fullWidth variant="outlined" color="primary">
+          Login
+        </Button>
+      </form>
+    </Paper>
+  </div>;
+}
+
+const REGISTER_MUTATION = gql`
+  mutation (
+    $username: String!,
+    $email: String!,
+    $password: String!
+  ) {
+    createUser(
+      username: $username,
+      email: $email,
+      password: $password
+    ) {
+      user {
+        username
+        email
+      }
+    }
+  }
+`;
 
 const styles = theme => ({
   root: {

@@ -3881,6 +3881,7 @@ __metadata:
     eslint-plugin-standard: ^4.0.1
     graphql: ^14.6.0
     husky: ^4.2.3
+    prop-types: ^15.7.2
     react: ^16.13.0
     react-dom: ^16.13.0
     react-player: ^1.15.2
