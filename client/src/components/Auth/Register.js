@@ -18,22 +18,25 @@ import Slide from "@material-ui/core/Slide";
 import Gavel from "@material-ui/icons/Gavel";
 import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 
-function Register ({ classes }) {
-  const [createUser, { loading, error }] = useMutation(REGISTER_MUTATION);
+function Transition(props) {
+  return <Slide direction="up" {...props} />
+}
+function Register ({ classes, setNewUser }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [open, setOpen] = useState(false);
+  const [createUser, { loading, error }] = useMutation(REGISTER_MUTATION);
 
   const handleSubmit = async (event, createUser) => {
     event.preventDefault();
-    const res = await createUser({
+    await createUser({
       variables: {
         username,
         email,
         password
       }
-    });
-    console.log({ res });
+    }).then(setOpen(true));
   };
 
   return <div className={classes.root}>
@@ -61,14 +64,35 @@ function Register ({ classes }) {
           fullWidth
           variant="contained"
           color="secondary"
+          disabled={loading || !username.trim() || !email.trim() || !password.trim()}
           className={classes.submit}>
-          Register
+          {loading ? "Registering..." : "Register"}
         </Button>
         <Button fullWidth variant="outlined" color="primary">
           Login
         </Button>
+        {error && <div>Error</div>}
       </form>
     </Paper>
+    <Dialog 
+      open={open}
+      disableBackdropClick={true}
+      TransitionComponent={Transition}>
+      <DialogTitle>
+        <VerifiedUserTwoTone className={classes.icon}/>
+        New Account
+      </DialogTitle>
+      <DialogContent>
+        User {username} successfully created!
+      </DialogContent>
+      <DialogActions>
+        <Button color="primary"
+            variant="contained"
+            onClick={() => setNewUser(false)}>
+              Login
+        </Button>
+      </DialogActions>
+    </Dialog>
   </div>;
 }
 
@@ -134,7 +158,8 @@ const styles = theme => ({
 });
 
 Register.propTypes = {
-  classes: PropTypes.any.isRequired
+  classes: PropTypes.any.isRequired,
+  setNewUser: PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(Register);
