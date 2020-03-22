@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
-import Root from "Root";
+// import Root from "Root";
 import Auth from "./components/Auth";
 import * as serviceWorker from "serviceWorker";
 

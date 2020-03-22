@@ -12,21 +12,22 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
+// import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import Gavel from "@material-ui/icons/Gavel";
 import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
+import Error from "../Shared/Error";
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />
+function Transition (props) {
+  return <Slide direction="up" {...props} />;
 }
 function Register ({ classes, setNewUser }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
-  
+
   const [createUser, { loading, error }] = useMutation(
     REGISTER_MUTATION,
     {
@@ -77,10 +78,10 @@ function Register ({ classes, setNewUser }) {
         <Button fullWidth variant="outlined" color="primary">
           Login
         </Button>
-        {error && <div>Error</div>}
+        {error && <Error error={error} />}
       </form>
     </Paper>
-    <Dialog 
+    <Dialog
       open={open}
       disableBackdropClick={true}
       TransitionComponent={Transition}>
@@ -93,8 +94,8 @@ function Register ({ classes, setNewUser }) {
       </DialogContent>
       <DialogActions>
         <Button color="primary"
-            variant="contained"
-            onClick={() => setNewUser(false)}>
+          variant="contained"
+          onClick={() => setNewUser(false)}>
               Login
         </Button>
       </DialogActions>
@@ -165,7 +166,7 @@ const styles = theme => ({
 
 Register.propTypes = {
   classes: PropTypes.any.isRequired,
-  setNewUser: PropTypes.bool.isRequired,
+  setNewUser: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles)(Register);
