@@ -75,7 +75,11 @@ function Register ({ classes, setNewUser }) {
           className={classes.submit}>
           {loading ? "Registering..." : "Register"}
         </Button>
-        <Button fullWidth variant="outlined" color="primary">
+        <Button 
+          fullWidth
+          variant="outlined"
+          color="primary"
+          onClick={() => setNewUser(false)}>
           Login
         </Button>
         {error && <Error error={error} />}
